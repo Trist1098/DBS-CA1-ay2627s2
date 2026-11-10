@@ -42,6 +42,10 @@ The function defaults to completed orders across all dates, grouped by member an
 
 The response contains overall `metrics` and a sorted `groups` array. An order or customer counts once in the overall totals if they have at least one matching line. An order can appear in several product groups. Item value is matching quantity times the current product price in the supplied schema. The completed average divides completed matching item value by the number of distinct completed matching orders. It is null when there are zero matching completed orders.
 
+## Verify overlapping requests
+
+On a development database with the supplied accounts and no existing John/product 1 review, run `node scripts/verify-concurrency.js` from `ecommerce`. It opens separate database connections and checks PostgreSQL's actual lock waits before allowing each transaction to commit. It verifies duplicate submissions, reply versus parent deletion in both orders, and comment creation versus review deletion. The temporary review and comments are removed afterwards.
+
 ## Try the app
 
 - Sign in as `johnsmith`. From Products, write a review for **HydroMax Classic 500ml**, which appears in one of John's completed orders. Use **My reviews** to edit it or confirm deletion.
