@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit review | Bottle Shop</title>
+  <link rel="stylesheet" href="/shop.css">
+  <script defer src="/shop.js"></script>
+  <script defer src="/review/reviews.js"></script>
+</head>
+<body data-review-page="update">
+  <nav class="shop-nav" aria-label="Shop navigation">
+    <a href="/product/retrieve/">Products</a>
+    <a href="/review/retrieve/all/">My reviews</a>
+    <a href="/review/create/">Write a review</a>
+  </nav>
+  <main class="shop-main">
+    <h1>Edit review</h1>
+    <p id="message" role="status">Loading…</p>
+    <p id="productName"></p><form id="reviewForm" hidden>
+      <label for="rating">Rating</label>
+      <select id="rating" required>
+        <option value="">Select a rating</option>
+        <option value="5">5 stars</option><option value="4">4 stars</option>
+        <option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option>
+      </select>
+      <label for="reviewText">Your review</label>
+      <textarea id="reviewText" rows="5" required></textarea>
+      <button type="submit">Save review</button>
+    </form>
+  </main>
+</body>
+</html>

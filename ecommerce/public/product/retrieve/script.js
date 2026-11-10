@@ -9,30 +9,18 @@ document.addEventListener("DOMContentLoaded", () => {
     window.location.href = "/auth/login";
     return;
   }
-  loadProducts();
+  const productId = new URLSearchParams(location.search).get("id");
+  if (productId === null) {
+    loadProducts();
+  } else {
+    for (const selector of [".filter-bar", ".stats-bar", "#productGrid"]) {
+      document.querySelector(selector).hidden = true;
+    }
+    document.querySelector(".page-header h1").textContent = "Product discussion";
+    document.querySelector(".page-header p").textContent = "Read reviews and join the conversation";
+    loadDiscussion(productId).catch(error => showError(error.message));
+  }
 });
-
-// =============================================================
-// TODO: Implement this function to create a comment
-// This function should:
-// 1. Read the review ID and comment text from the form
-// 2. Send a POST request to /api/comment/create
-// 3. Display a success or error message
-// =============================================================
-function createComment(reviewId) {
-  // TODO: Students to implement this function
-}
-
-// =============================================================
-// TODO: Implement this function to delete a comment
-// This function should:
-// 1. Read the comment ID from the form
-// 2. Send a DELETE request to /api/comment/delete
-// 3. Display a success or error message
-// =============================================================
-function deleteComment(commentId) {
-  // TODO: Students to implement this function
-}
 
 async function loadProducts() {
   const token = localStorage.getItem("token");
@@ -69,25 +57,28 @@ function renderProducts(products) {
   }
 
   grid.innerHTML = products.map((p) => {
-    const stockClass = p.stockQuantity === 0 ? "out" : p.stockQuantity < 20 ? "low" : "";
-    const stockLabel = p.stockQuantity === 0 ? "Out of Stock" : `${p.stockQuantity} in stock`;
+    const stock = Number(p.stockQuantity);
+    const stockClass = stock === 0 ? "out" : stock < 20 ? "low" : "";
+    const stockLabel = stock === 0 ? "Out of Stock" : `${stock} in stock`;
+    const escape = value => shopElement("span", value).innerHTML;
     return `
       <div class="product-card">
         <div class="product-image-wrapper">
           <div class="product-image-placeholder">🍶</div>
-          <span class="product-type-badge">${p.productType || "Bottle"}</span>
+          <span class="product-type-badge">${escape(p.productType || "Bottle")}</span>
         </div>
         <div class="product-body">
-          <div class="product-name">${p.name}</div>
-          <div class="product-description">${p.description || "No description available."}</div>
-          <div class="product-country">🌏 Made in ${p.country || "N/A"}</div>
+          <div class="product-name">${escape(p.name || "Product")}</div>
+          <div class="product-description">${escape(p.description || "No description available.")}</div>
+          <div class="product-country">🌏 Made in ${escape(p.country || "N/A")}</div>
           <div class="product-meta">
             <span class="product-price">S$${parseFloat(p.unitPrice).toFixed(2)}</span>
             <span class="product-stock ${stockClass}">${stockLabel}</span>
           </div>
-          <button class="btn-review" onclick="goToReview(${p.id}, '${encodeURIComponent(p.name)}')">
-            ✍️ Write a Review
-          </button>
+          <div class="review-actions">
+            <a href="/product/retrieve/?id=${p.id}">Read reviews</a>
+            <a href="/review/create/?productId=${p.id}">Write a review</a>
+          </div>
         </div>
       </div>`;
   }).join("");
@@ -100,7 +91,7 @@ function filterProducts() {
 
   let filtered = allProducts.filter((p) => {
     const matchSearch =
-      p.name.toLowerCase().includes(search) ||
+      (p.name || "").toLowerCase().includes(search) ||
       (p.description && p.description.toLowerCase().includes(search));
     const matchCategory = !category || p.productType === category;
     return matchSearch && matchCategory;
@@ -108,15 +99,9 @@ function filterProducts() {
 
   if (sort === "price-asc") filtered.sort((a, b) => a.unitPrice - b.unitPrice);
   else if (sort === "price-desc") filtered.sort((a, b) => b.unitPrice - a.unitPrice);
-  else if (sort === "name-asc") filtered.sort((a, b) => a.name.localeCompare(b.name));
+  else if (sort === "name-asc") filtered.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
   renderProducts(filtered);
-}
-
-function goToReview(productId, productName) {
-  localStorage.setItem("selectedProductId", productId);
-  localStorage.setItem("selectedProductName", decodeURIComponent(productName));
-  window.location.href = "/review/create";
 }
 
 function logout() {

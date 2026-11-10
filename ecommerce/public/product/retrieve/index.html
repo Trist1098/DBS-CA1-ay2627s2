@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>All Products – HydroMax Shop</title>
   <link rel="stylesheet" href="/product/retrieve/style.css"/>
+  <link rel="stylesheet" href="/shop.css"/>
 </head>
 <body>
 
@@ -66,7 +67,8 @@
     </div>
 
     <!-- Message -->
-    <div id="message" class="message hidden"></div>
+    <div id="message" class="message hidden" role="status"></div>
+    <section id="productDiscussion" class="discussion" aria-label="Product discussion" hidden></section>
 
     <!-- Product Grid -->
     <div class="product-grid" id="productGrid">
@@ -85,6 +87,8 @@
     <p>© 2025 HydroMax Shop · ST0525 Database Systems CA1</p>
   </footer>
 
+  <script src="/shop.js"></script>
+  <script src="/product/retrieve/discussion.js"></script>
   <script src="/product/retrieve/script.js"></script>
 </body>
 </html>

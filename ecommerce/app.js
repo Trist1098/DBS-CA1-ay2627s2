@@ -4,6 +4,10 @@ const path = require("path");
 
 const authRoutes = require("./routes/auth");
 const productRoutes = require("./routes/products");
+const reviewRoutes = require("./routes/reviews");
+const commentRoutes = require("./routes/comments");
+const adminRoutes = require("./routes/admin");
+const { databaseErrors } = require("./middleware/databaseErrors");
 
 const app = express();
 
@@ -14,6 +18,10 @@ app.use(express.static(path.join(__dirname, "public")));
 // API Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/product", productRoutes);
+app.use("/api/review", reviewRoutes);
+app.use("/api/comment", commentRoutes);
+app.use("/api/admin", adminRoutes);
+app.use("/api", databaseErrors);
 
 
 // Serve HTML pages

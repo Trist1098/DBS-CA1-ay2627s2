@@ -487,3 +487,21 @@ body {
   .filter-grid { grid-template-columns: 1fr; }
   .dashboard-main { padding: 16px; }
 }
+.summary-note { margin-block: 1rem; }
+.summary-chart {
+  margin: 1rem 0;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  background: white;
+}
+.summary-chart figcaption { font-weight: 700; margin-bottom: 0.75rem; }
+.summary-chart ul { list-style: none; padding: 0; }
+.summary-chart li {
+  display: grid;
+  grid-template-columns: minmax(6rem, 1fr) minmax(3rem, 2fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  margin-block: 0.4rem;
+  overflow-wrap: anywhere;
+}
+.summary-chart meter { width: 100%; }

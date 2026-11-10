@@ -21,6 +21,7 @@ const toCamelCase = (str) =>
 
 const transformKeys = (obj) => {
   if (Array.isArray(obj)) return obj.map(transformKeys);
+  if (obj instanceof Date) return obj;
   if (obj !== null && typeof obj === "object") {
     return Object.fromEntries(
       Object.entries(obj).map(([k, v]) => [toCamelCase(k), transformKeys(v)])

@@ -1,121 +1,126 @@
-// Basic instructions are provided to guide students.
-// Students are required to implement any additional code deem necessary
-// for their app to work.
-document.addEventListener("DOMContentLoaded", () => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+const filters = document.getElementById("summaryFilters");
+const message = document.getElementById("message");
+const results = document.getElementById("summaryTableBody");
+const exportButton = document.getElementById("exportSummary");
+const currency = new Intl.NumberFormat("en-SG", { style: "currency", currency: "SGD", currencyDisplay: "code" });
+const columns = ["Group", "Matching orders", "Customers", "Units", "Matching item value",
+  "Completed item value", "Average completed order value", "Latest order"];
+let currentSummary;
 
-  // Redirect non-admins away
-  if (!token || parseInt(role) !== 1) {
-    window.location.href = "/auth/login";
-    return;
+function amount(value) {
+  return value === null ? "—" : currency.format(value);
+}
+
+function groupValues(group) {
+  return [group.groupName, group.orderCount, group.customerCount, group.units, group.itemValue,
+    group.completedItemValue, group.avgCompletedOrderValue, group.latestOrderAt];
+}
+
+function renderSummary(summary) {
+  const { metrics, groups } = summary;
+  const cards = {
+    statTotalOrders: metrics.orderCount,
+    statTotalRevenue: amount(metrics.completedItemValue),
+    statTotalCustomers: metrics.customerCount,
+    statAvgOrder: amount(metrics.avgCompletedOrderValue),
+  };
+  for (const [id, value] of Object.entries(cards)) document.getElementById(id).textContent = value;
+
+  document.getElementById("resultCount").textContent = `${groups.length} ${summary.groupBy} groups`;
+  const rows = groups.map(group => {
+    const row = shopElement("tr");
+    const values = groupValues(group);
+    for (const [index, value] of values.entries()) {
+      const display = index >= 4 && index <= 6 ? amount(value) : index === 7 ? value.replace("T", " ") : value;
+      row.append(shopElement("td", display));
+    }
+    return row;
+  });
+  results.replaceChildren(...rows);
+  if (!rows.length) {
+    const row = shopElement("tr");
+    const cell = shopElement("td", "No orders matched these filters.");
+    cell.colSpan = columns.length;
+    row.append(cell);
+    results.append(row);
   }
 
-  const username = localStorage.getItem("username") || "Admin";
-  document.getElementById("navUsername").textContent = username;
-
-  // Set default date range: last 6 months to today
-  const today = new Date();
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(today.getMonth() - 6);
-
-  document.getElementById("endDate").value = formatDate(today);
-  document.getElementById("startDate").value = formatDate(sixMonthsAgo);
-});
-
-function formatDate(date) {
-  return date.toISOString().split("T")[0];
+  const chart = document.getElementById("summaryChart");
+  chart.hidden = groups.length === 0;
+  const visible = groups.slice(0, 8);
+  const maxValue = Math.max(1, ...visible.map(group => Number(group.itemValue)));
+  const bars = visible.map(group => {
+    const item = shopElement("li");
+    const bar = shopElement("meter");
+    bar.min = 0;
+    bar.max = maxValue;
+    bar.value = Math.max(0, group.itemValue);
+    bar.setAttribute("aria-label", group.groupName + " matching item value");
+    item.append(shopElement("span", group.groupName), bar, shopElement("span", amount(group.itemValue)));
+    return item;
+  });
+  chart.querySelector("ul").replaceChildren(...bars);
 }
 
-// =============================================================
-// TODO: Implement this function to load the sales order summary
-// This function should:
-// 1. Read the filter values from the form
-// 2. Send a GET request to the API endpoint with the filters
-// 3. Display the results in the table 
-// 4. Update the stat cards with the summary data
-// =============================================================
 async function loadSummary() {
-// TODO: Students to implement this function  
+  const params = new URLSearchParams(new FormData(filters));
+  const searchButton = filters.querySelector('[type="submit"]');
+  searchButton.disabled = true;
+  exportButton.disabled = true;
+  message.textContent = "Loading sales summary…";
+  message.className = "message";
+  try {
+    const { summary } = await shopRequest("/api/admin/sales-summary?" + params);
+    renderSummary(summary);
+    currentSummary = summary;
+    message.className = "message hidden";
+    message.textContent = "";
+  } catch (error) {
+    message.textContent = currentSummary
+      ? error.message + " Showing the previous successful results."
+      : error.message;
+    message.className = "message error";
+  } finally {
+    searchButton.disabled = false;
+    exportButton.disabled = !currentSummary?.groups.length;
+  }
 }
 
-// =============================================================
-// TODO: Implement this function to render the table
-// This function should:
-// 1. Accept an array of rows as a parameter
-// 2. Loop through the rows and generate HTML table rows
-// 3. Dispaly the rows in the table body
-// =============================================================
-function renderTable(rows) {
-// TODO: Students to implement this function
+function csvCell(value) {
+  const text = String(value ?? "");
+  const safe = typeof value === "string" && /^\s*[=+@\-]/.test(text) ? "'" + text : text;
+  return '"' + safe.replaceAll('"', '""') + '"';
 }
 
-// =============================================================
-// TODO: Implement this function to update the stat cards
-// This function should:
-// 1. Accept an array of rows as a parameter
-// 2. Calculate the total orders, total revenue, total customers
-//    and average order value 
-// 3. Display the values in the stat cards
-// =============================================================
-function updateStatCards(rows) {
-// TODO: Students to implement this function
-}
-
-function clearTable() {
-  const tbody = document.getElementById("summaryTableBody");
-  const countEl = document.getElementById("resultCount");
-  countEl.textContent = "No data loaded";
-  tbody.innerHTML = `
-    <tr>
-      <td colspan="10" class="table-placeholder">
-        <div class="placeholder-content">
-          <div class="placeholder-icon">📊</div>
-          <p>Use the filters above and click <strong>Search</strong> to load data.</p>
-        </div>
-      </td>
-    </tr>`;
-
-  // Reset stat cards
-  ["statTotalOrders", "statTotalRevenue", "statTotalCustomers", "statAvgOrder"]
-    .forEach((id) => {
-      document.getElementById(id).textContent = "–";
-    });
-}
-
-function resetFilters() {
-  const today = new Date();
-  const sixMonthsAgo = new Date();
-  sixMonthsAgo.setMonth(today.getMonth() - 6);
-
-  document.getElementById("startDate").value = formatDate(sixMonthsAgo);
-  document.getElementById("endDate").value = formatDate(today);
-  document.getElementById("productCategory").value = "";
-  document.getElementById("sortBy").value = "order_date";
-  document.getElementById("genderFilter").value = "";
-  document.getElementById("statusFilter").value = "";
-
-  clearTable();
-  document.getElementById("message").className = "message hidden";
-}
-
-// =============================================================
-// TODO: Implement this function to export the table as CSV
-// This function should:
-// 1. Read the table rows from the HTML table
-// 2. Convert the rows to CSV format
-// 3. Trigger a file download
-// =============================================================
 function exportCSV() {
-// Optional: Students to implement this function 
-}
-
-function showMessage(el, msg, type) {
-  el.textContent = msg;
-  el.className = `message ${type}`;
+  if (!currentSummary?.groups.length) return;
+  const rows = [columns, ...currentSummary.groups.map(groupValues)];
+  const csv = rows.map(row => row.map(csvCell).join(",")).join("\r\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const link = shopLink("Download sales summary", url);
+  link.download = "sales-summary.csv";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 0);
 }
 
 function logout() {
   localStorage.clear();
   window.location.href = "/auth/login";
+}
+
+if (!localStorage.getItem("token") || localStorage.getItem("role") !== "1") {
+  location.replace("/auth/login");
+} else {
+  document.getElementById("navUsername").textContent = localStorage.getItem("username") || "Admin";
+  filters.addEventListener("submit", event => {
+    event.preventDefault();
+    loadSummary();
+  });
+  filters.addEventListener("reset", () => {
+    if (!filters.querySelector('[type="submit"]').disabled) setTimeout(loadSummary, 0);
+  });
+  exportButton.addEventListener("click", exportCSV);
+  loadSummary();
 }

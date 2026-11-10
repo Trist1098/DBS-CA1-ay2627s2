@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My reviews | Bottle Shop</title>
+  <link rel="stylesheet" href="/shop.css">
+  <script defer src="/shop.js"></script>
+  <script defer src="/review/reviews.js"></script>
+</head>
+<body data-review-page="retrieve/all">
+  <nav class="shop-nav" aria-label="Shop navigation">
+    <a href="/product/retrieve/">Products</a>
+    <a href="/review/retrieve/all/">My reviews</a>
+    <a href="/review/create/">Write a review</a>
+  </nav>
+  <main class="shop-main">
+    <h1>My reviews</h1>
+    <p id="message" role="status">Loading…</p>
+    <div id="reviews"></div>
+  </main>
+</body>
+</html>

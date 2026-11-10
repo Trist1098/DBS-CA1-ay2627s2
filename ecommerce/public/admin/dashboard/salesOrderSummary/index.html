@@ -4,7 +4,7 @@
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Admin Dashboard – HydroMax Shop</title>
-  <link rel="stylesheet" href="style.css"/>
+  <link rel="stylesheet" href="/admin/dashboard/salesOrderSummary/style.css"/>
 </head>
 <body>
 
@@ -59,7 +59,7 @@
           <p class="page-subtitle">Filter, sort and analyse sales data across all orders</p>
         </div>
         <div class="title-actions">
-          <button class="btn-export" onclick="exportCSV()">⬇ Export CSV</button>
+          <button class="btn-export" id="exportSummary" type="button" disabled>Export CSV</button>
         </div>
       </div>
 
@@ -69,14 +69,14 @@
           <div class="stat-icon" style="background:#e8f4fd;">📋</div>
           <div class="stat-info">
             <div class="stat-value" id="statTotalOrders">–</div>
-            <div class="stat-label">Total Orders</div>
+            <div class="stat-label">Matching orders</div>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon" style="background:#d4edda;">💰</div>
           <div class="stat-info">
             <div class="stat-value" id="statTotalRevenue">–</div>
-            <div class="stat-label">Total Revenue</div>
+            <div class="stat-label">Completed item value</div>
           </div>
         </div>
         <div class="stat-card">
@@ -90,13 +90,13 @@
           <div class="stat-icon" style="background:#f8d7da;">📈</div>
           <div class="stat-info">
             <div class="stat-value" id="statAvgOrder">–</div>
-            <div class="stat-label">Avg Order Value</div>
+            <div class="stat-label">Average completed order value</div>
           </div>
         </div>
       </div>
 
       <!-- Filter Panel -->
-      <div class="filter-panel">
+      <form class="filter-panel" id="summaryFilters">
         <div class="filter-panel-header">
           <h2 class="filter-panel-title">
             <span>🔍</span> Filter &amp; Sort
@@ -108,28 +108,28 @@
 
           <!-- Start Date -->
           <div class="filter-group">
-            <label class="filter-label">Start Date</label>
+            <label class="filter-label" for="startDate">Start Date</label>
             <input
               type="date"
-              id="startDate"
+              id="startDate" name="startDate"
               class="filter-input"
             />
           </div>
 
           <!-- End Date -->
           <div class="filter-group">
-            <label class="filter-label">End Date</label>
+            <label class="filter-label" for="endDate">End Date</label>
             <input
               type="date"
-              id="endDate"
+              id="endDate" name="endDate"
               class="filter-input"
             />
           </div>
 
           <!-- Product Category -->
           <div class="filter-group">
-            <label class="filter-label">Product Category</label>
-            <select id="productCategory" class="filter-input">
+            <label class="filter-label" for="productCategory">Product Category</label>
+            <select id="productCategory" name="productType" class="filter-input">
               <option value="">All Categories</option>
               <option value="Classic Bottle">Classic Bottle</option>
               <option value="Insulated Bottle">Insulated Bottle</option>
@@ -149,19 +149,19 @@
 
           <!-- Sort By -->
           <div class="filter-group">
-            <label class="filter-label">Sort By</label>
-            <select id="sortBy" class="filter-input">
+            <label class="filter-label" for="sortBy">Sort By</label>
+            <select id="sortBy" name="sortBy" class="filter-input">
               <option value="order_date">Order Date (Latest First)</option>
               <option value="total_amount">Total Amount (Highest First)</option>
-              <option value="customer_name">Customer Name (A–Z)</option>
-              <option value="status">Status</option>
+              <option value="order_count">Matching Orders (Highest First)</option>
+              <option value="name">Group Name (A–Z)</option>
             </select>
           </div>
 
           <!-- Gender (bonus filter) -->
           <div class="filter-group">
-            <label class="filter-label">Gender</label>
-            <select id="genderFilter" class="filter-input">
+            <label class="filter-label" for="genderFilter">Gender</label>
+            <select id="genderFilter" name="gender" class="filter-input">
               <option value="">All Genders</option>
               <option value="M">Male</option>
               <option value="F">Female</option>
@@ -170,12 +170,19 @@
 
           <!-- Status Filter -->
           <div class="filter-group">
-            <label class="filter-label">Order Status</label>
-            <select id="statusFilter" class="filter-input">
+            <label class="filter-label" for="statusFilter">Order Status</label>
+            <select id="statusFilter" name="status" class="filter-input">
               <option value="">All Statuses</option>
-              <option value="COMPLETED">Completed</option>
+              <option value="COMPLETED" selected>Completed</option>
               <option value="PACKING">Packing</option>
               <option value="CANCELLED">Cancelled</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label class="filter-label" for="groupBy">Group by</label>
+            <select id="groupBy" name="groupBy" class="filter-input">
+              <option value="member">Member</option>
+              <option value="product">Product</option>
             </select>
           </div>
 
@@ -183,14 +190,20 @@
 
         <!-- Search Button -->
         <div class="filter-actions">
-          <button class="btn-search" onclick="loadSummary()">
+          <button class="btn-search" type="submit">
             🔍 Search
           </button>
+          <button class="btn-search" type="reset">Reset</button>
         </div>
-      </div>
+      </form>
 
       <!-- Message -->
-      <div id="message" class="message hidden"></div>
+      <div id="message" class="message hidden" role="status"></div>
+      <p class="summary-note">Item values use the current product price and include only matching line items.</p>
+      <figure id="summaryChart" class="summary-chart" hidden>
+        <figcaption>Matching item value · first eight groups in the selected sort order</figcaption>
+        <ul></ul>
+      </figure>
 
       <!-- Results Table -->
       <div class="table-panel">
@@ -203,21 +216,19 @@
           <table class="data-table" id="summaryTable">
             <thead>
               <tr>
-                <th>Order ID</th>
-                <th>Order Date</th>
-                <th>Customer Name</th>
-                <th>Gender</th>
-                <th>Product Name</th>
-                <th>Category</th>
-                <th>Qty</th>
-                <th>Unit Price</th>
-                <th>Total Amount</th>
-                <th>Status</th>
+                <th>Group</th>
+                <th>Matching orders</th>
+                <th>Customers</th>
+                <th>Units</th>
+                <th>Matching item value</th>
+                <th>Completed item value</th>
+                <th>Average completed order value</th>
+                <th>Latest order</th>
               </tr>
             </thead>
             <tbody id="summaryTableBody">
               <tr>
-                <td colspan="10" class="table-placeholder">
+                <td colspan="8" class="table-placeholder">
                   <div class="placeholder-content">
                     <div class="placeholder-icon">📊</div>
                     <p>Use the filters above and click <strong>Search</strong> to load data.</p>
@@ -236,6 +247,7 @@
     <p>© 2025 HydroMax Shop · ST0525 Database Systems CA1 · Admin Panel</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="/shop.js"></script>
+  <script src="/admin/dashboard/salesOrderSummary/script.js"></script>
 </body>
 </html>

@@ -1,0 +1,58 @@
+.shop-main {
+  max-width: 52rem;
+  margin: 2rem auto;
+  padding: 0 1rem;
+  font: 1rem/1.55 system-ui, sans-serif;
+  color: #17263a;
+}
+
+.shop-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  padding: 1rem;
+  background: #edf4fa;
+  font: 1rem system-ui, sans-serif;
+}
+
+.shop-main :is(select, textarea), .discussion :is(select, textarea) {
+  display: block;
+  width: 100%;
+  max-width: 40rem;
+  box-sizing: border-box;
+  margin: 0.25rem 0 1rem;
+  padding: 0.65rem;
+  border: 1px solid #72869c;
+  border-radius: 0.4rem;
+  font: inherit;
+}
+
+.shop-main button, .discussion button {
+  background: #164a72;
+  color: white;
+  border: 0;
+  border-radius: 0.4rem;
+  padding: 0.6rem 0.9rem;
+  font: inherit;
+  cursor: pointer;
+}
+
+.shop-main button:disabled, .discussion button:disabled { opacity: 0.65; }
+
+.review-card, .comment-card {
+  border: 1px solid #d6e0ea;
+  border-radius: 0.5rem;
+  padding: 0.85rem;
+  margin: 0.85rem 0;
+  overflow-wrap: anywhere;
+}
+
+.review-card p, .comment-card p { white-space: pre-wrap; }
+.review-actions { display: flex; flex-wrap: wrap; gap: 1rem; }
+.comment-list { list-style: none; padding-inline-start: 0; }
+.comment-list .comment-list { padding-inline-start: min(1rem, 2vw); }
+.comment-list .comment-list .comment-list .comment-list .comment-list { padding-inline-start: 0; }
+.comment-card summary { cursor: pointer; margin: 0.5rem 0; }
+#productGrid[hidden], .filter-bar[hidden], .stats-bar[hidden] { display: none; }
+.discussion { max-width: 52rem; margin-inline: auto; }
+.discussion h2, .discussion h3 { margin-block: 0.65rem; }
