@@ -1,5 +1,11 @@
 # ST0525 Database Systems CA1
 
+## Run from the submitted database backup
+
+Create a fresh PostgreSQL database and restore the plain SQL file inside `TristanChowTianRui_Db.zip` using pgAdmin's Query Tool or `psql -v ON_ERROR_STOP=1 -d your_database -f TristanChowTianRui_Backup.sql`. This backup contains the schema, all eight functions, and the supplied data. Set the matching credentials in `ecommerce/.env` using `.env.example`, then run `npm ci` and `npm start` from `ecommerce`.
+
+The steps below also support building the database from the original course backup.
+
 ## Run the starter locally
 
 1. Install Node.js with npm and PostgreSQL 18. The local baseline was checked with Node.js 24 and PostgreSQL 18.4.

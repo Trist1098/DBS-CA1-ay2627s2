@@ -1,0 +1,40 @@
+BEGIN
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Duplicate review rejected with 23505
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Packing order rejected with 42501
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Cancelled order rejected with 42501
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Another member bought it rejected with 42501
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Unknown member rejected with 22023
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Unknown product rejected with P0002
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Rating outside range rejected with 22023
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Missing rating rejected with 22023
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Blank text rejected with 22023
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Non-owner update rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Non-owner deletion rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_review_routines.sql:100: NOTICE:  Passed owner-only listing, editing, deletion, and comment cascade
+DO
+ROLLBACK
+BEGIN
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Author starting a thread rejected with 42501
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Replying to own comment rejected with 42501
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Cross-review parent rejected with P0002
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Missing parent rejected with P0002
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Missing review rejected with P0002
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Missing member rejected with 22023
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Blank text rejected with 22023
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Non-owner deletion rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Reply to placeholder rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Repeated deletion rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_comment_routines.sql:127: NOTICE:  Passed depth-first retrieval, placeholder redaction, surviving replies, and review cascade
+DO
+ROLLBACK
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  Completed baseline: 23 orders, 76 units, S$2,499.40
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  All statuses: 28 matching orders, 23 completed orders, completed average S$108.67
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  1-10 January: four product groups across two distinct orders, 7 units, S$156.30
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  Combined dates, gender, category and status: 2 orders, 5 units, S$94.50
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  Reversed dates rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  Unsupported gender rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  Unsupported status rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  Unsupported grouping rejected
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  Unsupported sort rejected
+DO
+psql:C:/Users/Tristan Chow/Desktop/School local for now/DBS/DBS-CA1-ay2627s2/ecommerce/sql/test_sales_summary.sql:112: NOTICE:  Passed matching and completed metrics, inclusive dates, grouping, sorting and empty results

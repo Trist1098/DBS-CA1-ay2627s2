@@ -1,0 +1,6 @@
+Verified 11 November 2026, Singapore time.
+Source extracted from TristanChowTianRui_Code.zip, npm ci, normal node app.js entry.
+Database ecommerce_ca1_restore_audit restored from TristanChowTianRui_Backup.sql.
+PASS packaged pages and assets, login roles, missing/invalid tokens, malformed JSON, admin-only API and reconciled sales summary.
+PASS purchase eligibility, member-ID spoofing, owner-only listing/edit/delete, duplicate submission and input validation.
+PASS nested retrieval, placeholder privacy, surviving replies and whole-review deletion.

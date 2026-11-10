@@ -1,0 +1,23 @@
+BEGIN
+CREATE TABLE
+INSERT 0 1
+CREATE TABLE
+INSERT 0 100
+INSERT 0 900
+ comments_returned | deepest_level
+-------------------+---------------
+              1000 |             1
+(1 row)
+
+                                                      QUERY PLAN
+-----------------------------------------------------------------------------------------------------------------------
+ Function Scan on get_comments  (cost=35.75..45.75 rows=1000 width=89) (actual time=2.050..2.076 rows=1000.00 loops=1)
+   Buffers: shared hit=36, local hit=1
+   InitPlan 1
+     ->  Seq Scan on thread_fixture  (cost=0.00..35.50 rows=2550 width=4) (actual time=0.003..0.004 rows=1.00 loops=1)
+           Buffers: local hit=1
+ Planning Time: 0.024 ms
+ Execution Time: 2.109 ms
+(7 rows)
+
+ROLLBACK
