@@ -27,3 +27,17 @@ The functions take a member ID for direct SQL testing. The app will supply the m
 2. On a development database restored from the starter, run [test_comment_routines.sql](ecommerce/sql/test_comment_routines.sql). Check the **Messages** tab for the results. The script rolls back its test rows.
 
 `get_comments` returns parents before their descendants, with a depth of 0 for root comments. The deleted row retains its ID and position. The result displays **Comment deleted** and omits the original author's details.
+
+## Install and test the sales summary
+
+Run [sales_summary.sql](ecommerce/sql/sales_summary.sql) in pgAdmin, then run [test_sales_summary.sql](ecommerce/sql/test_sales_summary.sql) against the original seed data. The tests are read-only.
+
+```sql
+SELECT jsonb_pretty(public.get_sale_order_summary(
+    '2025-01-01', '2025-03-01', 'M', 'Classic Bottle', 'COMPLETED', 'product', 'order_count'
+));
+```
+
+The function defaults to completed orders across all dates, grouped by member and sorted by latest order. Explicit `NULL` for status includes all statuses. The optional dates are inclusive, and gender and product type can be combined with them. Group by `member` or `product`. Sort by `order_date`, `total_amount`, `order_count`, or `name`.
+
+The response contains overall `metrics` and a sorted `groups` array. An order or customer counts once in the overall totals if they have at least one matching line. An order can appear in several product groups. Item value is matching quantity times the current product price in the supplied schema. The completed average divides completed matching item value by the number of distinct completed matching orders. It is null when there are zero matching completed orders.
