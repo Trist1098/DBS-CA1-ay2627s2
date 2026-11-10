@@ -20,3 +20,10 @@ The startup check covered the login page, both accounts' login responses, and th
 2. On a development database restored from the starter, run [test_review_routines.sql](ecommerce/sql/test_review_routines.sql). Use the **Messages** tab to inspect the outcomes. The script rolls back its test rows.
 
 The functions take a member ID for direct SQL testing. The app will supply the member ID from its verified login when the review pages are wired up. The ownership check is part of the same database statement that changes or deletes the review. A request targeting another member's review gets the same result as a missing review.
+
+## Install and test the comment routines
+
+1. After installing the review routines, run [comment_routines.sql](ecommerce/sql/comment_routines.sql) in pgAdmin.
+2. On a development database restored from the starter, run [test_comment_routines.sql](ecommerce/sql/test_comment_routines.sql). Check the **Messages** tab for the results. The script rolls back its test rows.
+
+`get_comments` returns parents before their descendants, with a depth of 0 for root comments. The deleted row retains its ID and position. The result displays **Comment deleted** and omits the original author's details.
