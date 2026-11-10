@@ -1,0 +1,66 @@
+erDiagram
+    direction LR
+    member_role ||..o{ member : classifies
+    member |o..o{ sale_order : places
+    sale_order ||..o{ sale_order_item : contains
+    product ||..o{ sale_order_item : appears_in
+    member ||..o{ review : writes
+    product ||..o{ review : receives
+    member ||..o{ comment : writes
+    review ||..o{ comment : contains
+    comment |o..o{ comment : parents
+
+    member_role {
+        integer id PK
+        varchar(25) name "nullable"
+    }
+    member {
+        integer id PK
+        varchar(50) username UK
+        varchar(50) email UK
+        date dob
+        varchar(255) password "password hash"
+        integer role FK
+        char(1) gender
+    }
+    sale_order {
+        integer id PK
+        integer member_id FK "nullable"
+        timestamp order_datetime
+        varchar(10) status "nullable"
+    }
+    sale_order_item {
+        integer id PK
+        integer sale_order_id FK
+        integer product_id FK
+        numeric quantity
+    }
+    product {
+        integer id PK
+        varchar(255) name "nullable"
+        text description "nullable"
+        numeric unit_price
+        numeric stock_quantity
+        varchar(100) country "nullable"
+        varchar(50) product_type "nullable"
+        varchar(255) image_url "nullable"
+        timestamp manufactured_on "nullable"
+    }
+    review {
+        integer id PK
+        integer member_id FK "unique with product_id"
+        integer product_id FK
+        smallint rating "1 to 5"
+        text review_text "nonblank"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    comment {
+        integer id PK
+        integer review_id FK "cascade on review deletion"
+        integer member_id FK
+        integer parent_comment_id FK "nullable, same review"
+        text comment_text "null after deletion"
+        timestamptz created_at
+        timestamptz deleted_at "null while visible"
+    }

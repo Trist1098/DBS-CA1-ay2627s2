@@ -1,0 +1,4 @@
+node_modules/
+.env
+.ca1-local/
+*.log
