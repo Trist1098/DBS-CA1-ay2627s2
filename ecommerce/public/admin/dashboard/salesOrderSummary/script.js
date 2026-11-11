@@ -65,7 +65,10 @@ function renderSummary(summary) {
 async function loadSummary() {
   const params = new URLSearchParams(new FormData(filters));
   const searchButton = filters.querySelector('[type="submit"]');
+  const resetButton = filters.querySelector('[type="reset"]');
+  if (searchButton.disabled) return;
   searchButton.disabled = true;
+  resetButton.disabled = true;
   exportButton.disabled = true;
   message.textContent = "Loading sales summary…";
   message.className = "message";
@@ -82,6 +85,7 @@ async function loadSummary() {
     message.className = "message error";
   } finally {
     searchButton.disabled = false;
+    resetButton.disabled = false;
     exportButton.disabled = !currentSummary?.groups.length;
   }
 }
